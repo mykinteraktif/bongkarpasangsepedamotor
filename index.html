@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab Maya Komponen Utama Motor Matik</title>
+<style>
+:root{
+  color-scheme:light;
+  --font-head:"Bahnschrift SemiCondensed","Bahnschrift","DIN Alternate","DIN Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --bg:#E7EBEF;--surface:#FBFCFD;--surface-2:#F1F4F7;--text:#1C2530;--muted:#596472;--line:#D3D9E0;
+  --accent:#F4B400;--accent-ink:#1C2530;--accent-soft:#FFF3CC;--accent-strong:#6E5100;--hazard-dark:#1C2530;
+  --focus:#1F5FA8;--ok:#15803D;--ok-soft:#DCFCE7;--bad:#B91C1C;--bad-soft:#FDE4E4;
+  --toast-bg:#1C2530;--toast-fg:#FFFFFF;--scrim:rgba(15,20,28,.55);
+  --stage:#F4F7FA;--grid:#DDE4EB;--shadow:rgba(20,30,45,.16);
+  --ink:#1B222C;--frame:#2E3540;--metal:#B7C0CA;--metal-2:#7B8795;--chrome:#E4E9EE;--dark:#39414C;
+  --tire:#22262D;--tire-edge:#151A21;--tire-line:#454D59;--wheelin:#2B3139;
+  --paint:#B83227;--paint-2:#8C2119;--paint-hi:#F09A90;--seat:#2A2F37;--glass:#D6ECFF;
+  --amber:#F59E0B;--tail:#DC2626;--caliper:#C9952B;--chain:#5B6470;--coil:#1F2937;--batt:#3B6E8F;
+  --wire-a:#DC2626;--wire-b:#1E293B;--wire-c:#2563EB;--hid:#1B222C;--belt:#3A3F47;
+  --sys-mesin:#EA580C;--sys-listrik:#CA8A04;--sys-tenaga:#7C3AED;--sys-kaki:#2563EB;--sys-bodi:#0D9488;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#11161C;--surface:#182029;--surface-2:#1E2731;--text:#E8EDF2;--muted:#98A4B3;--line:#2A3542;
+    --accent:#F7C12E;--accent-ink:#1A1405;--accent-soft:#3A3010;--accent-strong:#F7D66E;--hazard-dark:#0A0D12;
+    --focus:#6CA6E8;--ok:#4ADE80;--ok-soft:#12301E;--bad:#F87171;--bad-soft:#3A1717;
+    --toast-bg:#E8EDF2;--toast-fg:#11161C;--scrim:rgba(0,0,0,.65);
+    --stage:#141B23;--grid:#1F2A36;--shadow:rgba(0,0,0,.5);
+    --ink:#06080B;--frame:#4A5361;--metal:#A3AEBB;--metal-2:#6E7A89;--chrome:#D2D9E1;--dark:#2C333D;
+    --tire:#0E1116;--tire-edge:#4A5563;--tire-line:#323B47;--wheelin:#19202A;
+    --paint:#D2453A;--paint-2:#A3322A;--paint-hi:#F4A39A;--seat:#2A313B;--glass:#BFE0FF;
+    --amber:#FBBF24;--tail:#EF4444;--caliper:#D9A63A;--chain:#7A8492;--coil:#111827;--batt:#4A86AD;
+    --wire-a:#F87171;--wire-b:#CBD5E1;--wire-c:#60A5FA;--hid:#AEB8C4;--belt:#6B7480;
+    --sys-mesin:#FB923C;--sys-listrik:#FACC15;--sys-tenaga:#A78BFA;--sys-kaki:#60A5FA;--sys-bodi:#2DD4BF;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#11161C;--surface:#182029;--surface-2:#1E2731;--text:#E8EDF2;--muted:#98A4B3;--line:#2A3542;
+  --accent:#F7C12E;--accent-ink:#1A1405;--accent-soft:#3A3010;--accent-strong:#F7D66E;--hazard-dark:#0A0D12;
+  --focus:#6CA6E8;--ok:#4ADE80;--ok-soft:#12301E;--bad:#F87171;--bad-soft:#3A1717;
+  --toast-bg:#E8EDF2;--toast-fg:#11161C;--scrim:rgba(0,0,0,.65);
+  --stage:#141B23;--grid:#1F2A36;--shadow:rgba(0,0,0,.5);
+  --ink:#06080B;--frame:#4A5361;--metal:#A3AEBB;--metal-2:#6E7A89;--chrome:#D2D9E1;--dark:#2C333D;
+  --tire:#0E1116;--tire-edge:#4A5563;--tire-line:#323B47;--wheelin:#19202A;
+  --paint:#D2453A;--paint-2:#A3322A;--paint-hi:#F4A39A;--seat:#2A313B;--glass:#BFE0FF;
+  --amber:#FBBF24;--tail:#EF4444;--caliper:#D9A63A;--chain:#7A8492;--coil:#111827;--batt:#4A86AD;
+  --wire-a:#F87171;--wire-b:#CBD5E1;--wire-c:#60A5FA;--hid:#AEB8C4;--belt:#6B7480;
+  --sys-mesin:#FB923C;--sys-listrik:#FACC15;--sys-tenaga:#A78BFA;--sys-kaki:#60A5FA;--sys-bodi:#2DD4BF;
+}
+*,*::before,*::after{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+body.noscroll{overflow:hidden}
+body.dragging,body.dragging *{cursor:grabbing!important;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit}
+p{margin:0}
+.app{max-width:1260px;margin:0 auto;padding:20px 16px 28px}
+
+/* ---------- Header ---------- */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px}
+.overline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font:600 16px/1.2 var(--font-head);color:var(--muted)}
+.tag{display:inline-block;padding:3px 8px 2px;border-radius:4px;background:var(--text);color:var(--bg);font:700 15px/1.2 var(--font-head);letter-spacing:.02em}
+h1{margin:8px 0 0;font:700 clamp(30px,5.4vw,46px)/1 var(--font-head);letter-spacing:-.01em}
+.prog{flex:0 1 360px;min-width:min(100%,300px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px 11px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font:600 16px/1.2 var(--font-head);color:var(--muted)}
+.prog-top b{font:700 26px/1 var(--font-head);color:var(--text)}
+.bar{height:12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin:7px 0 6px}
+.bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--accent) 0 8px,var(--hazard-dark) 8px 16px);transition:width .5s ease}
+.prog-sub{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--muted)}
+.prog-sub b{color:var(--text)}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);grid-template-areas:"stage side" "actions side";grid-template-rows:auto 1fr;gap:14px;margin-top:16px;align-items:start}
+.stage-card{grid-area:stage}
+.actions{grid-area:actions}
+.side{grid-area:side}
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage" "actions" "side";grid-template-rows:auto}
+}
+@media (max-width:900px) and (min-height:600px){
+  .layout[data-mode="practice"] .stage-card,.layout[data-mode="quiz"] .stage-card{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;box-shadow:0 10px 24px -14px var(--shadow)}
+}
+
+/* ---------- Stage ---------- */
+.stage-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hazard{height:6px;background:repeating-linear-gradient(-45deg,var(--accent) 0 10px,var(--hazard-dark) 10px 20px)}
+.stage-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:9px 12px;border-bottom:1px solid var(--line);min-height:46px}
+.mode{flex:none;font:700 15px/1.2 var(--font-head);padding:4px 9px 3px;border-radius:6px;background:var(--accent-soft);color:var(--accent-strong)}
+.status{flex:1 1 220px;font-size:14px;color:var(--muted);line-height:1.35}
+.status b{color:var(--text)}
+.stage{background:var(--stage)}
+#stage{display:block;width:100%;height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+[data-mode="explore"] #stage .part{cursor:pointer}
+@media (hover:hover){[data-mode="explore"] #stage .part:hover{filter:url(#glow)}}
+
+/* ---------- Buttons ---------- */
+.actions{display:grid;grid-template-columns:minmax(0,1.35fr) repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.actions{grid-template-columns:repeat(2,minmax(0,1fr))}.actions .btn.primary{grid-column:1/-1}}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font:700 17px/1.1 var(--font-head);cursor:pointer;text-align:center;transition:transform .12s,border-color .2s,background .2s}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:19px;height:19px;flex:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{border-color:var(--text)}
+.btn.sm{min-height:40px;padding:7px 12px;font-size:16px;border-radius:10px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,.card:focus-visible,.opt:focus-visible,summary:focus-visible,.x:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* ---------- Side panel ---------- */
+.side{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+@media (min-width:901px){.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto}}
+.side h2{margin:2px 0 0;font:700 26px/1.05 var(--font-head)}
+.step-label{font:600 15px/1.2 var(--font-head);color:var(--muted)}
+.lead{margin-top:8px;color:var(--muted)}
+.lead b{color:var(--text)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.count{flex:none;min-width:38px;height:38px;padding:0 8px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:700 22px/1 var(--font-head)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.chip b{font-family:var(--font-head);font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.info dl{margin:14px 0 0;display:grid;gap:12px}
+.info dt{font:700 16px/1.2 var(--font-head);color:var(--muted)}
+.info dd{margin:3px 0 0}
+.info .btn{margin-top:14px}
+.note{margin-top:14px;padding:11px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:15px}
+.note.ok{background:var(--ok-soft);border-color:var(--ok)}
+.selbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:8px 8px 8px 12px;min-height:56px;border-radius:12px;border:1px dashed var(--line);font-size:15px;color:var(--muted)}
+.selbar.on{border:1px solid var(--accent);background:var(--accent-soft);color:var(--text)}
+.tray{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:12px}
+.card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 9px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;touch-action:manipulation;text-align:center}
+.card:hover{border-color:var(--muted)}
+.card .thumb{display:block;width:100%;height:60px;pointer-events:none}
+.card .nm{font:600 15px/1.1 var(--font-head)}
+.card .dot{position:absolute;top:7px;left:7px}
+.card.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.card.shake{animation:shake .38s}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.stats{margin-top:12px;font-size:14px;color:var(--muted)}
+.stats b{color:var(--text)}
+.empty{margin-top:12px;padding:16px;border-radius:12px;background:var(--ok-soft);border:1px solid var(--ok)}
+
+/* ---------- Quiz ---------- */
+.qdots{display:flex;gap:4px;margin-top:10px}
+.qdots i{flex:1;height:7px;border-radius:4px;background:var(--surface-2);border:1px solid var(--line)}
+.qdots i.ok{background:var(--ok);border-color:var(--ok)}
+.qdots i.bad{background:var(--bad);border-color:var(--bad)}
+.qdots i.cur{background:var(--accent);border-color:var(--accent)}
+.qtext{margin:14px 0 12px;font-size:19px;font-weight:600;line-height:1.35}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-weight:600;line-height:1.3}
+.opt:hover:not([disabled]){border-color:var(--muted)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font:700 16px/1 var(--font-head)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:15px}
+.fb.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb + .btn{margin-top:12px;width:100%}
+
+/* ---------- Footer, toast, modal ---------- */
+.foot{margin-top:18px;font-size:14px;color:var(--muted);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;width:max-content;max-width:min(92vw,520px);padding:12px 16px;border-radius:12px;border-left:6px solid var(--accent);background:var(--toast-bg);color:var(--toast-fg);font-weight:600;font-size:15px;line-height:1.35;box-shadow:0 14px 30px -12px rgba(0,0,0,.45);transition:opacity .25s,transform .25s;z-index:70}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.ok{border-left-color:var(--ok)}
+.toast.bad{border-left-color:var(--bad)}
+.modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--scrim)}
+.modal[hidden]{display:none}
+.sheet{width:min(640px,100%);max-height:100%;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+@media (max-width:560px){
+  .modal{align-items:flex-end;padding:calc(24px + env(safe-area-inset-top,0px)) 0 0}
+  .sheet{border-radius:18px 18px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+}
+.m-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sheet h3{margin:0;font:700 28px/1.05 var(--font-head)}
+.x{flex:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:22px;line-height:1;cursor:pointer}
+.m-sec{margin-top:16px}
+.m-sec h4{margin:0 0 6px;font:700 19px/1.2 var(--font-head)}
+.m-sec ol{margin:0;padding-left:20px}
+.m-sec li{margin:3px 0}
+.steps{display:grid;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step > span{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:700 18px/1 var(--font-head);border:2px solid var(--ink)}
+.credit{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.credit b{color:var(--text)}
+.m-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.m-actions .btn{flex:1 1 180px}
+.grp{margin-top:16px}
+.grp h4{margin:0 0 8px;display:flex;align-items:center;gap:8px;font:700 18px/1.2 var(--font-head)}
+details.item{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);margin-bottom:6px}
+details.item summary{display:flex;justify-content:space-between;gap:8px;padding:11px 12px;font-weight:600;cursor:pointer;list-style:none}
+details.item summary::-webkit-details-marker{display:none}
+details.item summary::after{content:"+";font:700 20px/1 var(--font-head);color:var(--muted)}
+details.item[open] summary::after{content:"\2212"}
+details.item .body{display:grid;gap:6px;padding:0 12px 12px;font-size:15px}
+details.item .body .btn{justify-self:start;margin-top:4px}
+.big{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 10px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:3px solid var(--ink)}
+.big svg{width:34px;height:34px}
+.center{text-align:center}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.kpis div{padding:10px 6px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.kpis b{display:block;font:700 30px/1 var(--font-head)}
+.kpis span{font-size:13px;color:var(--muted)}
+.review{margin-top:14px;display:grid;gap:6px}
+.review div{padding:9px 12px;border-radius:10px;background:var(--bad-soft);border:1px solid var(--bad);font-size:14px}
+.drag-ghost{position:fixed;left:0;top:0;z-index:80;width:100px;padding:6px;border-radius:12px;background:var(--surface);border:2px solid var(--accent);box-shadow:0 14px 30px -10px rgba(0,0,0,.45);transform:translate(-50%,-70%);pointer-events:none}
+.drag-ghost[hidden]{display:none}
+.drag-ghost svg{display:block;width:100%;height:56px}
+
+/* ---------- CP & ATP ---------- */
+.sheet.wide{width:min(840px,100%)}
+.idgrid{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;margin:0;font-size:15px}
+.idgrid dt{color:var(--muted);font-weight:600}
+.idgrid dd{margin:0}
+@media (max-width:560px){.idgrid{grid-template-columns:1fr;gap:2px}.idgrid dd{margin-bottom:8px}}
+.cp-open{font-size:15px;color:var(--muted)}
+.cp-el{margin-top:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);border-left:5px solid var(--accent);background:var(--surface-2)}
+.cp-el h5{margin:0 0 4px;font:700 18px/1.2 var(--font-head)}
+.cp-el p{font-size:15px}
+.cp-el mark{background:var(--accent-soft);color:inherit;padding:0 2px;border-radius:3px;box-shadow:inset 0 -2px 0 var(--accent)}
+.cp-el small{display:block;margin-top:6px;font-size:13px;color:var(--muted)}
+.cp-other{margin-top:10px;font-size:14px;color:var(--muted)}
+.tp{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.tp-no{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);border:2px solid var(--ink);font:700 18px/1 var(--font-head)}
+.tp-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.tp-head b{font:700 20px/1 var(--font-head);margin-right:2px}
+.tp-text{margin-top:8px;font-weight:600;line-height:1.4}
+.tp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin:12px 0 0;font-size:14px}
+.tp-grid dt{font:700 15px/1.2 var(--font-head);color:var(--muted)}
+.tp-grid dd{margin:2px 0 0}
+@media (max-width:560px){.tp{grid-template-columns:28px minmax(0,1fr);gap:10px;padding:12px}.tp-no{width:28px;height:28px;font-size:16px}.tp-grid{grid-template-columns:1fr}}
+.pill{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:5px 11px;border-radius:99px;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface-2)}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.pill.ok{background:var(--ok-soft);border-color:var(--ok)}.pill.ok i{background:var(--ok)}
+.pill.mid{background:var(--accent-soft);border-color:var(--accent)}.pill.mid i{background:var(--accent)}
+.pill.low{background:var(--bad-soft);border-color:var(--bad)}.pill.low i{background:var(--bad)}
+.tp-total{margin-top:12px;font-size:14px;color:var(--muted)}
+
+/* ---------- SVG ilustrasi ---------- */
+.grid-line{fill:none;stroke:var(--grid);stroke-width:1}
+.ground{fill:var(--shadow)}
+.s{stroke:var(--ink);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.s2{stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.f-metal{fill:var(--metal)}.f-metal2{fill:var(--metal-2)}.f-chrome{fill:var(--chrome)}.f-dark{fill:var(--dark)}
+.f-wheelin{fill:var(--wheelin)}.f-paint{fill:var(--paint)}.f-paint2{fill:var(--paint-2)}.f-seat{fill:var(--seat)}
+.f-glass{fill:var(--glass)}.f-amber{fill:var(--amber)}.f-tail{fill:var(--tail)}.f-caliper{fill:var(--caliper)}
+.f-batt{fill:var(--batt)}.f-coil{fill:var(--coil)}
+.f-tire{fill:var(--tire);stroke:var(--tire-edge);stroke-width:3}
+.tread{fill:none;stroke:var(--tire-line);stroke-width:5;stroke-dasharray:5 8}
+.rim{fill:none;stroke:var(--metal);stroke-width:9}
+.ring-o{fill:none;stroke:var(--ink);stroke-width:2.5}
+.spoke-o{stroke:var(--ink);stroke-width:13;stroke-linecap:round}
+.spoke{stroke:var(--metal);stroke-width:8;stroke-linecap:round}
+.tube-o{fill:none;stroke:var(--ink);stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
+.tube{fill:none;stroke:var(--frame);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.pipe-o{fill:none;stroke:var(--ink);stroke-width:17;stroke-linecap:round}
+.pipe{fill:none;stroke:var(--metal);stroke-width:11;stroke-linecap:round}
+.chain-o{fill:none;stroke:var(--ink);stroke-width:11;stroke-linejoin:round}
+.chain{fill:none;stroke:var(--chain);stroke-width:6;stroke-dasharray:6 3;stroke-linejoin:round}
+.fin{stroke:var(--metal-2);stroke-width:3;stroke-linecap:round}
+.vent{stroke:var(--metal-2);stroke-width:2.5;stroke-linecap:round}
+.hose{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round}
+.wire{fill:none;stroke-width:4;stroke-linecap:round}
+.wa{stroke:var(--wire-a)}.wb{stroke:var(--wire-b)}.wc{stroke:var(--wire-c)}
+.rod-o{stroke:var(--ink);stroke-width:10;stroke-linecap:round}
+.rod{stroke:var(--chrome);stroke-width:6;stroke-linecap:round}
+.spring-o{fill:none;stroke:var(--ink);stroke-width:8;stroke-linejoin:round}
+.spring{fill:none;stroke:var(--paint);stroke-width:4.5;stroke-linejoin:round}
+.bar-o{stroke:var(--ink);stroke-width:12;stroke-linecap:round}
+.bar2{stroke:var(--metal);stroke-width:7;stroke-linecap:round}
+.grip-o{stroke:var(--ink);stroke-width:15;stroke-linecap:round}
+.grip{stroke:var(--tire-line);stroke-width:10;stroke-linecap:round}
+.lever{fill:none;stroke:var(--metal-2);stroke-width:4;stroke-linecap:round}
+.lever-o{stroke:var(--ink);stroke-width:9;stroke-linecap:round}
+.lever2{stroke:var(--metal-2);stroke-width:5;stroke-linecap:round}
+.stem-o{stroke:var(--ink);stroke-width:8;stroke-linecap:round}
+.stem{stroke:var(--metal-2);stroke-width:4;stroke-linecap:round}
+.plug-o{stroke:var(--ink);stroke-width:9;stroke-linecap:round}
+.plug{stroke:var(--chrome);stroke-width:5;stroke-linecap:round}
+.bracket{stroke:var(--metal-2);stroke-width:6;stroke-linecap:round}
+.beam{stroke:var(--amber);stroke-width:3;stroke-linecap:round;opacity:.85}
+.stitch{fill:none;stroke:var(--metal-2);stroke-width:2;stroke-dasharray:5 4}
+.stripe{fill:none;stroke:var(--paint-hi);stroke-width:6;stroke-linecap:round}
+.rib{stroke:var(--dark);stroke-width:3;stroke-linecap:round}
+.peg-o{stroke:var(--ink);stroke-width:12;stroke-linecap:round}
+.peg{stroke:var(--tire-line);stroke-width:7;stroke-linecap:round}
+.stand-o{stroke:var(--ink);stroke-width:9;stroke-linecap:round}
+.stand{stroke:var(--metal-2);stroke-width:5;stroke-linecap:round}
+.svgtxt{font:700 13px var(--font-head);fill:var(--chrome);text-anchor:middle}
+.f-body{fill:var(--paint);fill-opacity:.2;stroke:var(--paint-2);stroke-width:3;stroke-linejoin:round}
+.f-body2{fill:var(--dark);fill-opacity:.45;stroke:var(--paint-2);stroke-width:2.5;stroke-linejoin:round}
+.hid{fill:var(--metal);fill-opacity:.15;stroke:var(--hid);stroke-width:2.5;stroke-dasharray:8 5;stroke-linejoin:round}
+.hid-line{fill:none;stroke:var(--hid);stroke-width:2.5;stroke-dasharray:8 5;stroke-linecap:round}
+.belt-o{fill:none;stroke:var(--ink);stroke-width:10;stroke-linejoin:round}
+.belt{fill:none;stroke:var(--belt);stroke-width:6;stroke-dasharray:3 2;stroke-linejoin:round}
+.mani-o{fill:none;stroke:var(--ink);stroke-width:13;stroke-linecap:round}
+.mani{fill:none;stroke:var(--dark);stroke-width:8;stroke-linecap:round}
+.rib2{stroke:var(--metal-2);stroke-width:3;stroke-linecap:round}
+#stage .part{transition:opacity .3s}
+#stage .part.dim{opacity:.16}
+#stage.focusing .base{opacity:.16}
+#stage .base{transition:opacity .3s}
+#stage .part.hl{filter:url(#glow)}
+#stage .part.pop{animation:pop .55s cubic-bezier(.2,1.3,.4,1) both;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.mk{cursor:pointer}
+.mk .mk-c{fill:var(--accent);stroke:var(--ink);stroke-width:2.5}
+.mk .mk-t{fill:var(--accent-ink);font:700 20px var(--font-head);text-anchor:middle;pointer-events:none}
+.mk .mk-ring{fill:none;stroke:var(--accent);stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center}
+.mk.ready .mk-ring{animation:ring 1.6s ease-out infinite}
+.mk.hint .mk-c{fill:var(--ok)}
+.mk.hint .mk-ring{stroke:var(--ok);animation:ring 1s ease-out infinite}
+.mk.over .mk-c{fill:var(--text)}
+.mk.over .mk-t{fill:var(--bg)}
+.mk.wrong .mk-c{fill:var(--bad)}
+@keyframes ring{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(2.1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <div class="overline"><span class="tag">Lab Maya</span><span>Teknik Sepeda Motor, kelas X</span></div>
+      <h1>Komponen Utama Motor Matik</h1>
+    </div>
+    <div class="prog" role="group" aria-label="Indikator progres praktik">
+      <div class="prog-top"><span>Progres praktik</span><b id="pPct">0%</b></div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pBarWrap"><i id="pBar"></i></div>
+      <div class="prog-sub"><span>Rakit <b id="pRakit">0/19</b></span><span>Uji <b id="pUji">0/10</b></span></div>
+    </div>
+  </header>
+
+  <main class="layout" id="layout" data-mode="explore">
+    <section class="stage-card" aria-label="Area utama sepeda motor">
+      <div class="hazard" aria-hidden="true"></div>
+      <div class="stage-head">
+        <span class="mode" id="modeChip">Eksplorasi</span>
+        <span class="status" id="status" aria-live="polite"></span>
+      </div>
+      <div class="stage">
+        <svg id="stage" viewBox="135 72 760 474" role="img" aria-label="Ilustrasi sepeda motor matik tampak samping kiri">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" class="grid-line"/></pattern>
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F4B400" flood-opacity="1"/>
+              <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#F4B400" flood-opacity="1"/>
+            </filter>
+          </defs>
+          <rect x="135" y="72" width="760" height="474" fill="url(#grid)"/>
+          <g transform="matrix(-1 0 0 1 1020 0)">
+            <g id="Lback" class="base"></g>
+            <g id="L0"></g>
+            <g id="Lmid" class="base"></g>
+            <g id="L1"></g>
+          </g>
+          <g id="Lmk"></g>
+        </svg>
+      </div>
+    </section>
+
+    <nav class="actions" aria-label="Tombol kendali">
+      <button type="button" class="btn primary" id="btnStart"></button>
+      <button type="button" class="btn" id="btnGuide"></button>
+      <button type="button" class="btn" id="btnList"></button>
+      <button type="button" class="btn" id="btnCp"></button>
+      <button type="button" class="btn" id="btnReset"></button>
+    </nav>
+
+    <aside class="side" id="side" aria-live="polite"></aside>
+  </main>
+
+  <footer class="foot">Penyusun: Mohammad Yusron Kholish, S.Kom, SMKS PGRI SINGOSARI</footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal" id="modal" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="drag-ghost" id="ghost" hidden></div>
+
+<script>
+(function () {
+'use strict';
+
+/* =====================================================================
+   PENGATURAN ASET PNG (opsional)
+   ---------------------------------------------------------------------
+   Ilustrasi bawaan memakai SVG. Setiap komponen di KOMPONEN punya
+   properti `png`. Isi dengan data URI ("data:image/png;base64,...")
+   atau alamat file (mis. "aset/mesin.png" bila file HTML dijalankan
+   dari folder yang sama). PNG harus berlatar transparan dan tampak
+   samping kiri (motor menghadap ke kiri). Gambar otomatis dimuat
+   ke dalam kotak `box` [x, y, lebar, tinggi] komponen tersebut.
+   Kosongkan ('') untuk memakai ilustrasi SVG bawaan.
+   ===================================================================== */
+const ASET_RANGKA = { png: '', box: [125, 72, 760, 474] };
+
+const MIRROR = 1020; // gambar kerja dicerminkan agar tampak samping kiri (sisi bak CVT)
+const STORE_KEY = 'labmaya-tsm-matik-v2';
+const JUMLAH_SOAL = 10;
+
+const GRUP = {
+  mesin:   { label: 'Mesin & bahan bakar', v: '--sys-mesin' },
+  listrik: { label: 'Kelistrikan', v: '--sys-listrik' },
+  tenaga:  { label: 'Pemindah tenaga', v: '--sys-tenaga' },
+  kaki:    { label: 'Rangka, kaki-kaki & pengikat', v: '--sys-kaki' },
+  bodi:    { label: 'Bodi & kemudi', v: '--sys-bodi' }
+};
+
+/* ---------- Alat bantu gambar ---------- */
+const f1 = n => Math.round(n * 10) / 10;
+const P = a => a.map(p => f1(p[0]) + ',' + f1(p[1])).join(' ');
+const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+const dual = (d, o, i) => `<path d="${d}" class="${o}"/><path d="${d}" class="${i}"/>`;
+const txt = (x, y, s) => `<text x="${x}" y="${y}" class="svgtxt" transform="matrix(-1 0 0 1 ${2 * x} 0)">${s}</text>`;
+function hex(cx, cy, r) {
+  const a = [];
+  for (let i = 0; i < 6; i++) { const t = Math.PI / 3 * i + Math.PI / 6; a.push([cx + r * Math.cos(t), cy + r * Math.sin(t)]); }
+  return `<polygon points="${P(a)}" class="f-chrome s2"/>`;
+}
+function ring(cx, cy, R, n, r, cls, off) {
+  let s = '';
+  for (let k = 0; k < n; k++) { const a = ((off || 0) + k * 360 / n) * Math.PI / 180; s += `<circle cx="${f1(cx + R * Math.cos(a))}" cy="${f1(cy + R * Math.sin(a))}" r="${r}" class="${cls}"/>`; }
+  return s;
+}
+function sprocket(cx, cy, r, n) {
+  const a = [];
+  for (let i = 0; i < n * 2; i++) { const t = Math.PI * i / n; const rr = i % 2 ? r - 5 : r; a.push([cx + rr * Math.cos(t), cy + rr * Math.sin(t)]); }
+  return `<polygon points="${P(a)}" class="f-chrome s2"/>`;
+}
+function wheel(cx, cy, rot) {
+  let o = '', i = '';
+  for (let k = 0; k < 5; k++) {
+    const a = (rot + k * 72) * Math.PI / 180;
+    const x1 = f1(cx + 16 * Math.cos(a)), y1 = f1(cy + 16 * Math.sin(a)), x2 = f1(cx + 66 * Math.cos(a)), y2 = f1(cy + 66 * Math.sin(a));
+    o += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="spoke-o"/>`;
+    i += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="spoke"/>`;
+  }
+  const c = `cx="${cx}" cy="${cy}"`;
+  return `<circle ${c} r="95" class="f-tire"/><circle ${c} r="84" class="tread"/><circle ${c} r="71" class="f-wheelin"/>${o}${i}` +
+    `<circle ${c} r="66.5" class="rim"/><circle ${c} r="71" class="ring-o"/><circle ${c} r="62" class="ring-o"/>` +
+    `<circle ${c} r="18" class="f-metal2 s"/><circle ${c} r="7" class="f-chrome s2"/>`;
+}
+function band(A, B, t0, t1, w) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy), px = -dy / L * w / 2, py = dx / L * w / 2;
+  const a = [A[0] + dx * t0, A[1] + dy * t0], b = [A[0] + dx * t1, A[1] + dy * t1];
+  return P([[a[0] + px, a[1] + py], [b[0] + px, b[1] + py], [b[0] - px, b[1] - py], [a[0] - px, a[1] - py]]);
+}
+const FORK_A = [615, 185], FORK_B = [725, 437];
+
+/* ---------- Ilustrasi SVG tiap bagian (skuter matik generik) ---------- */
+const DRAW = {
+  baseBack() {
+    const tubes = 'M622 196 L604 300 L598 396 L492 410 L468 300 L232 284';
+    return `<ellipse cx="500" cy="536" rx="360" ry="10" class="ground"/>` + dual(tubes, 'tube-o', 'tube') +
+      `<polygon points="${band(FORK_A, FORK_B, 0.02, 0.66, 16)}" class="f-chrome s2"/>`;
+  },
+  baseMid() {
+    let s = `<path d="M486 420 Q492 470 462 490 L322 486 Q286 482 280 452 Q276 418 300 404 L444 392 Q482 392 486 420 Z" class="f-metal s"/>` +
+      `<path d="M310 406 L452 400 Q478 402 478 430 L478 462 Q476 484 452 484 L322 480 Q300 478 300 454 L300 432 Q302 408 310 406 Z" class="f-wheelin s2"/>`;
+    s += `<path d="M652 366 Q725 310 800 366 L792 376 Q725 326 660 376 Z" class="f-paint s"/>`;
+    s += `<polygon points="${band(FORK_A, FORK_B, 0.6, 1.04, 26)}" class="f-metal2 s"/><circle cx="725" cy="437" r="8" class="f-chrome s2"/>`;
+    s += `<path d="M600 196 Q650 196 700 232 Q748 272 762 340 L758 358 L690 356 Q640 362 600 396 L592 396 L596 300 Z" class="f-body"/>`;
+    s += `<path d="M600 396 L486 398 L486 426 L600 424 Z" class="f-body2"/>`;
+    s += `<path d="M600 424 Q594 456 566 462 L486 462 L486 426 Z" class="f-body"/>`;
+    s += `<path d="M486 398 Q478 340 470 296 L230 284 Q206 286 204 300 L212 318 Q260 330 300 336 Q360 344 400 362 Q440 380 486 398 Z" class="f-body"/>`;
+    s += `<path d="M206 282 L194 286 L196 304 L210 306 Z" class="f-tail s2"/>`;
+    s += dual('M470 488 L452 528', 'stand-o', 'stand');
+    return s;
+  },
+  mesin() {
+    let s = `<path d="M470 416 L476 386 L494 386 L500 414 Z" class="f-metal2 s2"/>`;
+    s += `<path d="M478 420 Q514 414 514 452 Q514 490 480 490 Z" class="f-metal s"/>`;
+    s += `<path d="M512 424 L552 420 L556 480 L512 484 Z" class="f-dark s"/>`;
+    for (let x = 521; x <= 545; x += 8) s += `<line x1="${x}" y1="426" x2="${x + 1}" y2="478" class="fin"/>`;
+    s += `<path d="M552 418 L578 416 Q588 448 582 480 L556 480 Z" class="f-metal2 s"/>`;
+    s += dual('M566 417 L572 402', 'plug-o', 'plug');
+    return s;
+  },
+  tangki() {
+    return `<path d="M222 290 L306 294 Q314 296 314 306 L312 330 Q310 340 300 340 L234 334 Q220 332 220 320 Z" class="f-metal s"/>` +
+      `<path d="M232 318 L300 322" class="rib2"/><ellipse cx="262" cy="291" rx="14" ry="4" class="f-chrome s2"/>`;
+  },
+  jok() {
+    return `<path d="M478 290 Q472 268 440 266 L300 258 Q232 256 212 262 Q200 268 204 280 L228 288 L470 294 Q480 294 478 290 Z" class="f-seat s"/>` +
+      `<path d="M440 274 L232 266" class="stitch"/><path d="M372 262 L370 290" class="stitch"/>`;
+  },
+  aki() {
+    return `<rect x="462" y="295" width="9" height="10" rx="2" class="f-tail s2"/><rect x="489" y="295" width="9" height="10" rx="2" class="f-dark s2"/>` +
+      `<rect x="456" y="302" width="48" height="44" rx="5" class="f-batt s"/><rect x="456" y="302" width="48" height="11" rx="4" class="f-dark s2"/>` +
+      txt(480, 334, '12V');
+  },
+  karburator() {
+    return dual('M546 372 Q560 392 562 418', 'mani-o', 'mani') +
+      `<path d="M552 352 Q570 340 582 318" class="wire wb"/>` +
+      `<rect x="518" y="346" width="34" height="28" rx="6" class="f-metal s"/><circle cx="535" cy="360" r="8" class="f-chrome s2"/>` +
+      `<rect x="526" y="334" width="10" height="13" rx="2" class="f-dark s2"/>`;
+  },
+  filter() {
+    return `<path d="M462 344 L520 350 L520 368 L462 364 Z" class="f-dark s2"/>` +
+      `<path d="M362 336 L452 330 Q464 330 464 342 L464 370 Q464 382 452 382 L372 386 Q358 386 358 374 L358 344 Q358 336 362 336 Z" class="f-dark s"/>` +
+      `<path d="M372 346 H450 M372 356 H450 M372 366 H450" class="rib2"/>`;
+  },
+  knalpot() {
+    return `<path d="M574 482 Q590 504 556 510 L380 506 Q338 500 330 436" class="hid-line"/>` +
+      `<path d="M330 404 L228 380 Q204 376 200 392 Q198 408 222 414 L330 436 Z" class="hid"/>` +
+      dual('M574 482 Q590 504 556 510 L520 510', 'pipe-o', 'pipe') +
+      `<path d="M198 380 L212 377 L216 405 L202 408 Z" class="f-metal2 s"/>`;
+  },
+  rodaDepan() { return wheel(725, 437, -54); },
+  rodaBelakang() { return wheel(300, 437, -90); },
+  rem() {
+    return `<path d="M686 382 Q676 362 684 340" class="hose"/>` +
+      `<circle cx="725" cy="437" r="44" class="f-chrome s"/>` + ring(725, 437, 34, 10, 3, 'f-metal2', 0) +
+      `<circle cx="725" cy="437" r="22" class="f-metal2 s2"/>` +
+      `<path d="M676 380 Q662 404 674 430 L694 426 Q684 406 696 384 Z" class="f-caliper s"/>`;
+  },
+  vbelt() {
+    return dual('M335 413 L448 428 A24 24 0 0 1 448 476 L335 471 A29 29 0 0 1 335 413 Z', 'belt-o', 'belt');
+  },
+  puli() {
+    let s = `<circle cx="335" cy="442" r="33" class="f-chrome s"/><circle cx="335" cy="442" r="20" class="f-metal2 s2"/>` +
+      ring(335, 442, 26, 6, 3, 'f-metal2', 0) + `<circle cx="335" cy="442" r="7" class="f-chrome s2"/>`;
+    s += `<circle cx="448" cy="452" r="28" class="f-chrome s"/>`;
+    for (let k = 0; k < 12; k++) {
+      const a = k * 30 * Math.PI / 180;
+      s += `<line x1="${f1(448 + 12 * Math.cos(a))}" y1="${f1(452 + 12 * Math.sin(a))}" x2="${f1(448 + 25 * Math.cos(a))}" y2="${f1(452 + 25 * Math.sin(a))}" class="fin"/>`;
+    }
+    return s + `<circle cx="448" cy="452" r="10" class="f-metal2 s2"/>`;
+  },
+  shock() {
+    const A = [318, 404], B = [336, 298];
+    const L = Math.hypot(B[0] - A[0], B[1] - A[1]);
+    const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, px = -uy, py = ux;
+    const at = (t, w) => [A[0] + (B[0] - A[0]) * t + px * (w || 0), A[1] + (B[1] - A[1]) * t + py * (w || 0)];
+    const r0 = at(0.45), r1 = at(0.97);
+    const line = cls => `<line x1="${f1(r0[0])}" y1="${f1(r0[1])}" x2="${f1(r1[0])}" y2="${f1(r1[1])}" class="${cls}"/>`;
+    let s = line('rod-o') + line('rod');
+    s += `<polygon points="${P([at(0.05, 11), at(0.5, 11), at(0.5, -11), at(0.05, -11)])}" class="f-dark s"/>`;
+    const sp = [];
+    for (let i = 0; i <= 16; i++) sp.push(at(0.44 + 0.48 * i / 16, i % 2 ? 13 : -13));
+    s += `<polyline points="${P(sp)}" class="spring-o"/><polyline points="${P(sp)}" class="spring"/>`;
+    s += `<polygon points="${P([at(0.41, 16), at(0.44, 16), at(0.44, -16), at(0.41, -16)])}" class="f-metal2 s2"/>`;
+    s += `<polygon points="${P([at(0.92, 16), at(0.95, 16), at(0.95, -16), at(0.92, -16)])}" class="f-metal2 s2"/>`;
+    const e0 = at(0), e1 = at(1);
+    s += `<circle cx="${f1(e0[0])}" cy="${f1(e0[1])}" r="8" class="f-metal s2"/><circle cx="${f1(e1[0])}" cy="${f1(e1[1])}" r="8" class="f-metal s2"/>`;
+    return s;
+  },
+  setang() {
+    return dual('M590 178 L556 172', 'grip-o', 'grip') +
+      `<path d="M592 170 Q572 160 552 166" class="lever"/>` +
+      `<path d="M582 170 Q612 154 652 164 L660 184 Q628 198 588 192 Z" class="f-paint s"/>` +
+      `<rect x="606" y="154" width="16" height="10" rx="3" class="f-dark s2"/>`;
+  },
+  spion() {
+    return dual('M602 160 L590 124', 'stem-o', 'stem') +
+      `<ellipse cx="584" cy="110" rx="24" ry="13" transform="rotate(-10 584 110)" class="f-dark s"/>` +
+      `<ellipse cx="583" cy="110" rx="17" ry="8" transform="rotate(-10 583 110)" class="f-glass"/>`;
+  },
+  lampu() {
+    return `<path d="M708 252 Q736 262 754 280 L758 302 Q732 300 714 294 Z" class="f-dark s"/>` +
+      `<path d="M716 260 Q738 268 750 282 L752 296 Q732 294 720 290 Z" class="f-glass s2"/>` +
+      `<path d="M766 276 L798 266 M768 290 L802 290 M766 304 L798 314" class="beam"/>` +
+      `<path d="M680 244 L700 250 L698 260 L678 254 Z" class="f-amber s2"/>`;
+  },
+  kabel() {
+    return `<path d="M626 192 C664 196 680 226 664 262 S642 300 638 314" class="wire wb"/>` +
+      `<path d="M632 190 C672 192 690 230 672 264 S650 300 646 316" class="wire wa"/>` +
+      `<path d="M620 194 C656 200 668 228 656 262 S636 298 632 312" class="wire wc"/>` +
+      `<rect x="664" y="226" width="12" height="7" rx="2" transform="rotate(75 670 229)" class="f-dark"/>`;
+  },
+  kelistrikan() {
+    return `<path d="M638 298 Q650 296 652 284" class="wire wa"/><path d="M638 322 Q652 330 662 324" class="wire wc"/>` +
+      `<rect x="598" y="286" width="40" height="24" rx="4" class="f-dark s"/>` + txt(618, 303, 'ECU') +
+      `<rect x="604" y="314" width="34" height="14" rx="6" class="f-coil s2"/>` +
+      `<rect x="642" y="306" width="22" height="24" rx="3" class="f-metal2 s2"/><path d="M646 312 H660 M646 318 H660 M646 324 H660" class="rib"/>`;
+  },
+  baut() {
+    return `<circle cx="484" cy="392" r="13" class="f-metal2 s2"/>` + hex(484, 392, 9) + `<circle cx="484" cy="392" r="3.5" class="f-dark"/>` +
+      hex(725, 437, 7) + hex(318, 404, 6) + hex(336, 298, 6);
+  }
+};
+
+/* ---------- Data komponen (skuter matik generik) ----------
+   mk  = titik pasang (koordinat gambar kerja sebelum dicerminkan)
+   box = kotak penempatan PNG; vb = bingkai gambar kecil pada kartu   */
+const KOMPONEN = [
+  { id: 'mesin', nama: 'Mesin', grup: 'mesin', sistem: 'Mesin (sumber tenaga)',
+    singkat: 'mengubah energi bahan bakar menjadi tenaga putar',
+    fungsi: 'Mengubah energi kimia bahan bakar menjadi energi mekanik berupa putaran poros engkol melalui proses pembakaran di dalam silinder. Pada motor matik, mesin menyatu dengan bak transmisi CVT dan ikut berayun bersama roda belakang (unit mesin ayun).',
+    lokasi: 'Di bawah dek kaki bagian belakang; silinder mengarah ke depan dan menyatu dengan bak CVT.',
+    rawat: 'Ganti oli mesin sesuai jadwal di buku pedoman servis dan periksa rembesan oli.',
+    mk: [540, 452], box: [466, 384, 126, 112], layer: 1, z: 15, draw: 'mesin', png: '' },
+  { id: 'tangki', nama: 'Tangki Bensin', grup: 'mesin', sistem: 'Sistem bahan bakar',
+    singkat: 'menampung bahan bakar',
+    fungsi: 'Menampung bahan bakar dan menyalurkannya ke injektor melalui pompa bensin (motor injeksi) atau ke karburator melalui selang.',
+    lokasi: 'Di bawah jok bagian belakang, di atas roda belakang. Letaknya bisa berbeda pada tiap tipe skuter.',
+    rawat: 'Pastikan tutup tangki rapat, tidak bocor, dan isi bahan bakar sesuai rekomendasi pabrik.',
+    mk: [266, 314], box: [216, 284, 102, 60], layer: 1, z: 40, draw: 'tangki', png: '' },
+  { id: 'jok', nama: 'Jok', grup: 'bodi', sistem: 'Bodi',
+    singkat: 'menjadi tempat duduk pengendara dan pembonceng',
+    fungsi: 'Tempat duduk pengendara dan pembonceng. Pada motor matik, jok juga menjadi penutup bagasi dan akses ke aki serta tutup tangki.',
+    lokasi: 'Di atas bodi belakang, memanjang dari belakang dek kaki hingga ujung buritan.',
+    rawat: 'Periksa engsel dan pengunci jok serta jaga kulit jok agar tidak sobek.',
+    mk: [345, 272], box: [200, 256, 282, 42], layer: 1, z: 41, draw: 'jok', png: '' },
+  { id: 'aki', nama: 'Baterai/Aki', grup: 'listrik', sistem: 'Sistem kelistrikan',
+    singkat: 'menyimpan dan menyuplai energi listrik',
+    fungsi: 'Menyimpan energi listrik dan menyuplai arus untuk starter, klakson, lampu, ECU, dan sistem pengapian, terutama saat mesin baru dihidupkan.',
+    lokasi: 'Di bawah jok bagian depan. Pada sebagian skuter, aki berada di bawah dek kaki.',
+    rawat: 'Ukur tegangan (aki 12 V yang penuh sekitar 12,6–12,8 V), kencangkan dan bersihkan terminal dari kerak.',
+    mk: [480, 324], box: [452, 292, 56, 58], layer: 1, z: 34, draw: 'aki', png: '' },
+  { id: 'karburator', nama: 'Karburator / Throttle Body', grup: 'mesin', sistem: 'Sistem bahan bakar',
+    singkat: 'mencampur udara dan bahan bakar sesuai bukaan gas',
+    fungsi: 'Karburator mencampur udara dan bahan bakar dengan perbandingan yang tepat sesuai bukaan gas. Motor matik modern umumnya memakai injeksi: throttle body mengatur jumlah udara, sedangkan bensin disemprotkan oleh injektor yang terpasang di dekatnya.',
+    lokasi: 'Di atas kepala silinder, di antara saluran dari filter udara dan intake manifold.',
+    rawat: 'Bersihkan throttle body dari kerak karbon dan periksa kebocoran saluran masuk.',
+    mk: [535, 360], box: [512, 330, 72, 92], layer: 1, z: 32, draw: 'karburator', png: '' },
+  { id: 'filter', nama: 'Filter Udara', grup: 'mesin', sistem: 'Sistem pemasukan udara',
+    singkat: 'menyaring debu dari udara yang masuk ke mesin',
+    fungsi: 'Menyaring debu dan kotoran dari udara sebelum masuk ke throttle body atau karburator agar komponen mesin tidak cepat aus.',
+    lokasi: 'Di dalam kotak filter (airbox) yang menempel di atas bak CVT, di belakang throttle body.',
+    rawat: 'Ganti elemen filter sesuai jadwal servis, lebih cepat bila sering melewati jalan berdebu.',
+    mk: [410, 356], box: [354, 326, 170, 62], layer: 1, z: 31, draw: 'filter', png: '' },
+  { id: 'knalpot', nama: 'Knalpot', grup: 'mesin', sistem: 'Sistem pembuangan',
+    singkat: 'membuang gas sisa pembakaran dan meredam suara',
+    fungsi: 'Menyalurkan gas sisa pembakaran dari ruang bakar ke luar, meredam suara mesin, dan pada knalpot modern mengurangi emisi melalui katalis.',
+    lokasi: 'Di sisi kanan motor: leher knalpot keluar dari bawah kepala silinder, tabung peredam berada di samping roda belakang. Pada gambar tampak kiri ini, bagian yang tertutup digambar dengan garis putus-putus (garis tersembunyi).',
+    rawat: 'Periksa kebocoran sambungan leher knalpot dan kekencangan baut dudukannya.',
+    mk: [206, 394], box: [194, 370, 400, 144], layer: 1, z: 48, draw: 'knalpot', png: '' },
+  { id: 'roda-depan', nama: 'Roda Depan', grup: 'kaki', sistem: 'Kaki-kaki',
+    singkat: 'menopang beban depan dan mengikuti arah kemudi',
+    fungsi: 'Menopang beban bagian depan, mengikuti arah belokan setang, dan bersama ban memberi cengkeraman pada jalan.',
+    lokasi: 'Di ujung bawah garpu (suspensi) depan.',
+    rawat: 'Cek tekanan angin dan kedalaman alur ban sesuai rekomendasi pabrik.',
+    mk: [788, 492], box: [630, 342, 190, 190], layer: 0, z: 10, draw: 'rodaDepan', png: '' },
+  { id: 'roda-belakang', nama: 'Roda Belakang', grup: 'kaki', sistem: 'Kaki-kaki',
+    singkat: 'menerima tenaga mesin untuk mendorong motor maju',
+    fungsi: 'Menerima tenaga dari mesin melalui CVT dan gigi reduksi untuk mendorong motor maju, sekaligus menopang beban bagian belakang.',
+    lokasi: 'Di ujung belakang unit mesin ayun, tepat di belakang bak CVT.',
+    rawat: 'Cek tekanan angin dan keausan ban; periksa kampas rem tromol belakang saat servis.',
+    mk: [239, 493], box: [205, 342, 190, 190], layer: 0, z: 10, draw: 'rodaBelakang', png: '' },
+  { id: 'rem', nama: 'Rem', grup: 'kaki', sistem: 'Sistem pengereman',
+    singkat: 'memperlambat dan menghentikan laju motor',
+    fungsi: 'Memperlambat atau menghentikan motor dengan menjepit piringan cakram (atau menekan tromol) menggunakan kampas, sehingga energi gerak berubah menjadi panas akibat gesekan. Pada skuter, rem belakang umumnya tromol di dalam roda belakang.',
+    lokasi: 'Rem cakram depan: piringan cakram di poros roda depan, kaliper di kaki garpu depan.',
+    rawat: 'Periksa ketebalan kampas rem serta level dan warna minyak rem.',
+    mk: [684, 405], box: [660, 392, 112, 92], vb: [652, 330, 128, 160], layer: 0, z: 11, draw: 'rem', png: '' },
+  { id: 'vbelt', nama: 'V-Belt (Sabuk CVT)', grup: 'tenaga', sistem: 'Sistem pemindah tenaga (CVT)',
+    singkat: 'meneruskan putaran dari puli primer ke puli sekunder',
+    fungsi: 'Sabuk karet bergerigi yang meneruskan putaran dari puli primer (di poros engkol) ke puli sekunder. Pada motor matik, V-belt menggantikan peran rantai.',
+    lokasi: 'Di dalam bak CVT sisi kiri, melingkari puli primer dan puli sekunder.',
+    rawat: 'Periksa retak dan keausan sabuk, ganti sesuai interval di buku pedoman servis.',
+    mk: [392, 421], box: [302, 408, 176, 74], vb: [294, 400, 192, 90], layer: 1, z: 21, draw: 'vbelt', png: '' },
+  { id: 'puli', nama: 'Puli CVT', grup: 'tenaga', sistem: 'Sistem pemindah tenaga (CVT)',
+    singkat: 'mengubah perbandingan putaran secara otomatis sesuai putaran mesin',
+    fungsi: 'Puli primer (di poros engkol) dan puli sekunder mengubah diameter lingkar sabuk secara otomatis, sehingga perbandingan putaran berubah halus sesuai putaran mesin dan beban. Pada motor matik, puli menggantikan peran gear/sprocket.',
+    lokasi: 'Puli primer di bagian depan bak CVT; puli sekunder di bagian belakang, terhubung ke gigi reduksi dan poros roda belakang.',
+    rawat: 'Bersihkan debu di dalam bak CVT, periksa roller dan kampas kopling sentrifugal saat servis CVT.',
+    mk: [448, 452], box: [300, 406, 178, 80], vb: [294, 400, 192, 90], layer: 1, z: 20, draw: 'puli', png: '' },
+  { id: 'shockbreaker', nama: 'Shockbreaker', grup: 'kaki', sistem: 'Sistem suspensi',
+    singkat: 'meredam guncangan dari permukaan jalan',
+    fungsi: 'Meredam getaran dan guncangan dari permukaan jalan agar motor tetap stabil dan nyaman. Skuter matik umumnya memakai satu shock belakang; garpu depan juga berfungsi sebagai peredam kejut.',
+    lokasi: 'Di sisi kiri belakang, menghubungkan ujung bak CVT dengan rangka di bawah jok.',
+    rawat: 'Periksa rembesan oli pada tabung shock dan kondisi pegas.',
+    mk: [326, 352], box: [300, 290, 54, 124], layer: 1, z: 23, draw: 'shock', png: '' },
+  { id: 'setang', nama: 'Setang', grup: 'bodi', sistem: 'Sistem kemudi',
+    singkat: 'mengendalikan arah laju motor',
+    fungsi: 'Mengendalikan arah motor serta menjadi dudukan grip gas, tuas rem depan dan belakang, dan saklar-saklar. Motor matik tidak memiliki tuas kopling.',
+    lokasi: 'Di bagian atas depan, tertutup cover setang.',
+    rawat: 'Pastikan setang lurus, baut pengikat kencang, dan putaran kemudi tidak berat.',
+    mk: [614, 178], box: [548, 150, 116, 50], layer: 1, z: 43, draw: 'setang', png: '' },
+  { id: 'spion', nama: 'Spion', grup: 'bodi', sistem: 'Perlengkapan keselamatan',
+    singkat: 'membantu melihat kondisi lalu lintas di belakang',
+    fungsi: 'Membantu pengendara melihat kondisi lalu lintas di belakang dan samping tanpa harus menoleh.',
+    lokasi: 'Terpasang pada setang, menjulang ke atas.',
+    rawat: 'Atur sudut pandang sebelum berkendara dan ganti kaca yang retak.',
+    mk: [584, 110], box: [556, 92, 52, 74], layer: 1, z: 44, draw: 'spion', png: '' },
+  { id: 'lampu', nama: 'Lampu', grup: 'listrik', sistem: 'Sistem penerangan',
+    singkat: 'menerangi jalan di depan pengendara',
+    fungsi: 'Lampu utama menerangi jalan di depan agar pengendara dapat melihat dan terlihat oleh pengguna jalan lain. Lampu sein memberi isyarat arah belok.',
+    lokasi: 'Di permukaan depan pelindung kaki (front panel), dengan lampu sein di sisinya.',
+    rawat: 'Periksa nyala lampu jauh, lampu dekat, dan sein sebelum berkendara.',
+    mk: [736, 282], box: [676, 242, 86, 64], vb: [668, 232, 144, 90], layer: 1, z: 42, draw: 'lampu', png: '' },
+  { id: 'baut-mur', nama: 'Baut dan Mur', grup: 'kaki', sistem: 'Komponen pengikat',
+    singkat: 'mengikat komponen agar kuat tetapi tetap bisa dibongkar',
+    fungsi: 'Mengikat dan mengunci komponen agar terpasang kuat namun tetap dapat dibongkar-pasang. Di lab ini titiknya berada pada baut dudukan mesin (engine hanger) yang menjadi poros ayun unit mesin; baut dan mur juga ada di poros roda, shockbreaker, dan rangka.',
+    lokasi: 'Dudukan mesin (engine hanger), tepat di atas bagian depan bak CVT.',
+    rawat: 'Kencangkan memakai kunci momen sesuai torsi spesifikasi.',
+    mk: [484, 392], box: [468, 376, 32, 32], vb: [460, 368, 48, 48], layer: 1, z: 50, draw: 'baut', png: '' },
+  { id: 'kabel', nama: 'Kabel', grup: 'listrik', sistem: 'Kelistrikan & kontrol',
+    singkat: 'menghantarkan arus listrik dan meneruskan gerakan tuas',
+    fungsi: 'Kabel bodi (wiring harness) menghantarkan arus listrik ke seluruh komponen kelistrikan, sedangkan kabel kontrol (gas dan rem belakang) meneruskan gerakan tuas di setang.',
+    lokasi: 'Keluar dari bawah cover setang, masuk ke balik pelindung kaki menuju rangka.',
+    rawat: 'Periksa kabel yang terkelupas, soket longgar, dan kabel gas yang seret.',
+    mk: [668, 240], box: [612, 184, 84, 138], layer: 1, z: 36, draw: 'kabel', png: '' },
+  { id: 'kelistrikan', nama: 'Komponen Kelistrikan', grup: 'listrik', sistem: 'Sistem pengapian & pengisian',
+    singkat: 'mengatur pengapian serta pengisian listrik',
+    fungsi: 'Kelompok komponen seperti ECU/CDI (mengatur saat pengapian dan injeksi), koil (menaikkan tegangan untuk busi), dan kiprok/regulator rectifier (menyearahkan serta menstabilkan arus pengisian aki).',
+    lokasi: 'Di balik pelindung kaki (front panel), menempel pada rangka depan. Letaknya bisa berbeda pada tiap tipe skuter.',
+    rawat: 'Pastikan soket bersih, terpasang kencang, dan terlindung dari air.',
+    mk: [622, 306], box: [592, 280, 78, 58], layer: 1, z: 35, draw: 'kelistrikan', png: '' }
+];
+
+const byId = {};
+KOMPONEN.forEach(c => {
+  c.svg = DRAW[c.draw]();
+  c.smk = [MIRROR - c.mk[0], c.mk[1]]; // posisi titik di layar
+  byId[c.id] = c;
+});
+[...KOMPONEN].sort((a, b) => a.smk[0] - b.smk[0] || a.smk[1] - b.smk[1]).forEach((c, i) => { c.no = i + 1; });
+const TOTAL = KOMPONEN.length;
+
+/* ---------- CP & ATP ----------
+   CP: Keputusan Kepala BSKAP Kemendikdasmen Nomor 046/H/KR/2025,
+   mata pelajaran Dasar-dasar Teknik Otomotif, Fase E.               */
+const KURIKULUM = {
+  acuan: 'Keputusan Kepala BSKAP Kemendikdasmen Nomor 046/H/KR/2025 tentang Capaian Pembelajaran pada Pendidikan Anak Usia Dini, Jenjang Pendidikan Dasar, dan Jenjang Pendidikan Menengah',
+  mapel: 'Dasar-dasar Teknik Otomotif',
+  fase: 'Fase E (kelas X)',
+  program: 'Teknik Otomotif, konsentrasi keahlian Teknik Sepeda Motor',
+  alokasi: '6 JP (3 pertemuan × 2 JP @ 45 menit)',
+  pembuka: 'Pada akhir Fase E, murid memiliki kemampuan sebagai berikut.',
+  elemen: [
+    { no: 3, nama: 'Gambar Teknik Otomotif',
+      cp: 'Menerapkan gambar teknik berdasarkan standar gambar teknik yang berlaku; membaca gambar teknik; serta <mark>menentukan letak dan posisi komponen otomotif sesuai buku manual servis</mark>.',
+      catatan: 'Bagian yang ditandai dilatih pada tahap Rakit.' },
+    { no: 6, nama: 'Komponen Otomotif',
+      cp: 'Menganalisis komponen utama konversi energi otomotif, komponen tambahan mesin otomotif, dan komponen perlengkapan mesin otomotif.',
+      catatan: 'Dilatih pada tahap Kenali dan Uji, diperdalam dengan diskusi alur tenaga di kelas.' }
+  ],
+  lain: ['Wawasan Dunia Otomotif', 'Kecakapan Kerja Dasar (Basic Job Skills), K3, dan Budaya Kerja', 'Peralatan dan Perlengkapan Tempat Kerja', 'Dasar Kelistrikan dan Elektronika Otomotif', 'Dasar Sistem Hidrolik dan Pneumatik']
+};
+const ATP = [
+  { kode: 'TP 1', elemen: 'Komponen Otomotif', jp: 2, tahap: 'Kenali',
+    tp: 'Melalui eksplorasi ilustrasi sepeda motor matik, murid mampu mengidentifikasi nama dan fungsi 19 komponen utama sepeda motor matik dengan tepat.',
+    kegiatan: 'Tahap 1 Kenali: mengetuk tiap komponen pada motor, membaca fungsi, letak, dan tips perawatannya, serta membuka Daftar Komponen.',
+    kktp: 'Membuka keterangan 19 komponen di lab maya dan menyebutkan nama serta fungsi minimal 15 komponen secara lisan.',
+    asesmen: 'Formatif: tanya jawab lisan dan lembar pengamatan guru.',
+    dpl: ['Penalaran kritis', 'Kemandirian'] },
+  { kode: 'TP 2', elemen: 'Gambar Teknik Otomotif', jp: 2, tahap: 'Rakit',
+    tp: 'Dengan merujuk gambar tampak samping seperti pada buku manual servis, murid mampu menentukan letak dan posisi 19 komponen utama sepeda motor matik secara tepat dan teliti.',
+    kegiatan: 'Tahap 2 Rakit: memasang kartu komponen ke titik bernomor pada rangka dan bodi tembus pandang; jawaban salah memunculkan petunjuk letak.',
+    kktp: 'Seluruh 19 komponen terpasang dengan salah pasang paling banyak 3 kali.',
+    asesmen: 'Formatif: rekap salah pasang dan penggunaan petunjuk dari lab maya.',
+    dpl: ['Penalaran kritis', 'Kemandirian'] },
+  { kode: 'TP 3', elemen: 'Komponen Otomotif', jp: 2, tahap: 'Uji',
+    tp: 'Murid mampu mengelompokkan komponen sepeda motor berdasarkan sistemnya dan menganalisis peran tiap komponen dalam alur konversi energi, dari campuran bahan bakar dan udara hingga putaran roda belakang.',
+    kegiatan: 'Tahap 3 Uji: 10 soal identifikasi dan fungsi; memakai kode warna kelompok sistem. Di kelas: diskusi alur tenaga dari throttle body, mesin, puli dan V-belt CVT, gigi reduksi, hingga roda belakang.',
+    kktp: 'Nilai uji identifikasi minimal 75 dan mampu menjelaskan urutan alur tenaga dengan benar.',
+    asesmen: 'Sumatif lingkup materi: nilai uji di lab maya dan penjelasan alur tenaga (lisan atau tertulis).',
+    dpl: ['Penalaran kritis', 'Komunikasi', 'Kolaborasi'] }
+];
+
+/* ---------- Ikon ---------- */
+const st = 'fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const IC = {
+  play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+  stop: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
+  eye: `<svg viewBox="0 0 24 24" ${st}><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" ${st}><path d="M20 6 9 17l-5-5"/></svg>`,
+  book: `<svg viewBox="0 0 24 24" ${st}><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg>`,
+  list: `<svg viewBox="0 0 24 24" ${st}><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>`,
+  reset: `<svg viewBox="0 0 24 24" ${st}><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/></svg>`,
+  bulb: `<svg viewBox="0 0 24 24" ${st}><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></svg>`,
+  quiz: `<svg viewBox="0 0 24 24" ${st}><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>`,
+  target: `<svg viewBox="0 0 24 24" ${st}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>`
+};
+
+/* ---------- State ---------- */
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const state = {
+  mode: 'explore', placed: new Set(), selected: null, focus: null,
+  wrong: 0, hints: 0, order: shuffle(KOMPONEN.map(c => c.id)), last: null, justPlaced: null,
+  quiz: null, quizScore: null, best: null, hintId: null, seen: false, known: new Set()
+};
+
+function save() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      placed: [...state.placed], wrong: state.wrong, hints: state.hints, order: state.order,
+      quizScore: state.quizScore, best: state.best, last: state.last, seen: state.seen, known: [...state.known]
+    }));
+  } catch (e) { /* penyimpanan tidak tersedia */ }
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (!d) return false;
+    (d.placed || []).forEach(id => { if (byId[id]) state.placed.add(id); });
+    state.wrong = +d.wrong || 0; state.hints = +d.hints || 0;
+    if (Array.isArray(d.order) && d.order.length === TOTAL && d.order.every(id => byId[id])) state.order = d.order;
+    state.quizScore = typeof d.quizScore === 'number' ? d.quizScore : null;
+    state.best = typeof d.best === 'number' ? d.best : null;
+    state.last = byId[d.last] ? d.last : null;
+    state.seen = !!d.seen;
+    (d.known || []).forEach(id => { if (byId[id]) state.known.add(id); });
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---------- Elemen ---------- */
+const $ = s => document.querySelector(s);
+const svg = $('#stage'), side = $('#side'), layout = $('#layout');
+const LY = { back: $('#Lback'), l0: $('#L0'), mid: $('#Lmid'), l1: $('#L1'), mk: $('#Lmk') };
+const finePointer = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
+
+/* ---------- Penggambaran ---------- */
+function imgMarkup(src, box) {
+  const [x, y, w, h] = box;
+  return `<image href="${src}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" transform="matrix(-1 0 0 1 ${2 * x + w} 0)"/>`;
+}
+function innerOf(c) { return c.png ? imgMarkup(c.png, c.box) : c.svg; }
+function thumbSVG(c) {
+  const v = c.vb || [c.box[0] - 10, c.box[1] - 10, c.box[2] + 20, c.box[3] + 20];
+  return `<svg class="thumb" viewBox="${MIRROR - v[0] - v[2]} ${v[1]} ${v[2]} ${v[3]}" aria-hidden="true"><g transform="matrix(-1 0 0 1 ${MIRROR} 0)">${innerOf(c)}</g></svg>`;
+}
+function renderBase() {
+  if (ASET_RANGKA.png) { LY.back.innerHTML = imgMarkup(ASET_RANGKA.png, ASET_RANGKA.box); LY.mid.innerHTML = ''; }
+  else { LY.back.innerHTML = DRAW.baseBack(); LY.mid.innerHTML = DRAW.baseMid(); }
+}
+function stageScale() { const w = svg.getBoundingClientRect().width || 760; return w / 760; }
+function renderStage() {
+  const show = c => state.mode !== 'practice' || state.placed.has(c.id);
+  const list = KOMPONEN.filter(show).sort((a, b) => a.z - b.z);
+  const part = c => `<g class="part" data-id="${c.id}">${innerOf(c)}</g>`;
+  LY.l0.innerHTML = list.filter(c => c.layer === 0).map(part).join('');
+  LY.l1.innerHTML = list.filter(c => c.layer === 1).map(part).join('');
+  svg.classList.toggle('focusing', !!state.focus);
+  svg.querySelectorAll('.part').forEach(g => {
+    const on = g.dataset.id === state.focus;
+    g.classList.toggle('hl', on);
+    g.classList.toggle('dim', !!state.focus && !on);
+  });
+  if (state.justPlaced) {
+    const g = svg.querySelector(`.part[data-id="${state.justPlaced}"]`);
+    if (g) g.classList.add('pop');
+    state.justPlaced = null;
+  }
+  renderMarkers();
+}
+function renderMarkers() {
+  if (state.mode !== 'practice') { LY.mk.innerHTML = ''; return; }
+  const k = Math.max(1, Math.min(1.5, (11 / stageScale()) / 18)).toFixed(2);
+  LY.mk.innerHTML = KOMPONEN.filter(c => !state.placed.has(c.id)).map(c => {
+    const cls = ['mk', state.selected ? 'ready' : '', state.hintId === c.id ? 'hint' : ''].join(' ');
+    return `<g class="${cls}" data-mk="${c.id}" transform="translate(${c.smk[0]} ${c.smk[1]}) scale(${k})"><circle r="18" class="mk-ring"/><circle r="18" class="mk-c"/><text class="mk-t" y="7">${c.no}</text></g>`;
+  }).join('');
+}
+function groupDot(c) { return `<span class="dot" style="background:var(${GRUP[c.grup].v})"></span>`; }
+function cardHTML(id) {
+  const c = byId[id], sel = state.selected === id;
+  return `<button type="button" class="card${sel ? ' sel' : ''}" data-card="${id}" aria-pressed="${sel}">${groupDot(c)}${thumbSVG(c)}<span class="nm">${c.nama}</span></button>`;
+}
+function statsHTML() { return `Salah pasang: <b>${state.wrong}</b>&nbsp;&nbsp;Petunjuk dipakai: <b>${state.hints}</b>`; }
+
+function exploreHTML() {
+  if (state.focus) {
+    const c = byId[state.focus];
+    return `<div class="info"><div class="step-label">Info komponen</div><h2>${c.nama}</h2>
+      <div class="chips"><span class="chip">${groupDot(c)}${c.sistem}</span></div>
+      <dl><div><dt>Fungsi</dt><dd>${c.fungsi}</dd></div><div><dt>Letak</dt><dd>${c.lokasi}</dd></div><div><dt>Tips perawatan</dt><dd>${c.rawat}</dd></div></dl>
+      <button type="button" class="btn sm" data-act="clearfocus">Tutup info</button></div>`;
+  }
+  const done = state.placed.size === TOTAL;
+  const legend = Object.entries(GRUP).map(([k, g]) =>
+    `<span class="chip"><span class="dot" style="background:var(${g.v})"></span>${g.label} <b>${KOMPONEN.filter(c => c.grup === k).length}</b></span>`).join('');
+  return `<div class="step-label">Langkah 1 dari 3, TP 1</div><h2>Kenali komponennya</h2>
+    <p class="lead">Ketuk bagian mana pun pada motor untuk melihat nama, fungsi, dan letaknya. Setelah paham, tekan <b>${startLabel()[0]}</b>.</p>
+    <div class="chips">${legend}</div>
+    <p class="note">Komponen yang sudah kamu kenali: <b>${state.known.size}/${TOTAL}</b></p>
+    ${done ? `<div class="note ok">Perakitan sudah selesai. Tekan <b>Mulai Uji</b> untuk mengerjakan 10 soal identifikasi.</div>` : ''}
+    ${state.quizScore != null ? `<div class="note">Nilai uji terakhir: <b>${state.quizScore * 10}</b>${state.best != null ? `, nilai terbaik: <b>${state.best * 10}</b>` : ''}</div>` : ''}`;
+}
+function practiceHTML() {
+  const rest = state.order.filter(id => !state.placed.has(id));
+  const sel = state.selected ? byId[state.selected] : null;
+  if (!rest.length) {
+    return `<div class="step-label">Langkah 2 dari 3, TP 2</div><h2>Motor sudah lengkap</h2>
+      <div class="empty">Semua ${TOTAL} komponen terpasang pada posisi yang benar.</div>
+      <div class="stats" id="stats">${statsHTML()}</div>
+      <div class="m-actions"><button type="button" class="btn primary" data-act="quiz">${IC.quiz}<span>Mulai Uji</span></button></div>`;
+  }
+  const last = state.last && state.placed.has(state.last) ? byId[state.last] : null;
+  return `<div class="step-label">Langkah 2 dari 3, TP 2</div>
+    <div class="row"><h2>Komponen belum terpasang</h2><span class="count" aria-label="sisa komponen">${rest.length}</span></div>
+    <p class="lead">Ketuk kartu komponen, lalu ketuk titik bernomor yang tepat pada motor.${finePointer ? ' Kartu juga bisa diseret ke titiknya.' : ''}</p>
+    <div class="selbar${sel ? ' on' : ''}">${sel ? `<span>Dipilih: <b>${sel.nama}</b></span><button type="button" class="btn sm" data-act="hint">${IC.bulb}<span>Petunjuk</span></button>` : '<span>Belum ada komponen yang dipilih.</span>'}</div>
+    <div class="tray">${rest.map(cardHTML).join('')}</div>
+    ${last ? `<div class="note ok"><b>${last.nama}</b> terpasang. ${cap(last.singkat)}.</div>` : ''}
+    <div class="stats" id="stats">${statsHTML()}</div>`;
+}
+function quizHTML() {
+  const Q = state.quiz, q = Q.qs[Q.i], c = byId[q.id];
+  const prompt = q.type === 'tunjuk' ? 'Komponen yang menyala kuning pada motor adalah…'
+    : q.type === 'fungsi' ? `Apa fungsi utama <b>${c.nama}</b>?`
+    : `Komponen yang berfungsi <b>${c.singkat}</b> adalah…`;
+  const label = id => q.type === 'fungsi' ? cap(byId[id].singkat) : byId[id].nama;
+  const ans = Q.answered;
+  const opts = q.opts.map((id, i) => {
+    let cls = 'opt';
+    if (ans != null) { if (id === q.id) cls += ' ok'; else if (i === ans) cls += ' bad'; }
+    return `<button type="button" class="${cls}" data-opt="${i}"${ans != null ? ' disabled' : ''}><span class="k">${'ABCD'[i]}</span><span>${label(id)}</span></button>`;
+  }).join('');
+  const dots = Q.qs.map((_, i) => `<i class="${i < Q.res.length ? (Q.res[i] ? 'ok' : 'bad') : (i === Q.i ? 'cur' : '')}"></i>`).join('');
+  let fb = '';
+  if (ans != null) {
+    const ok = q.opts[ans] === q.id;
+    fb = `<div class="fb ${ok ? 'ok' : 'bad'}"><b>${ok ? 'Benar.' : 'Kurang tepat.'}</b> ${c.nama}: ${c.fungsi}</div>
+      <button type="button" class="btn primary" data-act="next">${Q.i + 1 < Q.qs.length ? 'Soal berikutnya' : 'Lihat hasil'}</button>`;
+  }
+  return `<div class="step-label">Langkah 3 dari 3, TP 3</div>
+    <div class="row"><h2>Uji identifikasi</h2><span class="count">${Q.i + 1}</span></div>
+    <div class="qdots" aria-hidden="true">${dots}</div>
+    <p class="qtext">${prompt}</p><div class="opts">${opts}</div>${fb}`;
+}
+
+function startLabel() {
+  if (state.mode === 'practice') return ['Lihat Motor Utuh', IC.eye];
+  if (state.mode === 'quiz') return ['Hentikan Uji', IC.stop];
+  if (state.placed.size === TOTAL) return ['Mulai Uji', IC.quiz];
+  return [state.placed.size ? 'Lanjutkan Praktik' : 'Mulai Praktik', IC.play];
+}
+function quizCount() {
+  if (state.mode === 'quiz' && state.quiz) return state.quiz.res.length;
+  return state.quizScore != null ? JUMLAH_SOAL : 0;
+}
+function renderTop() {
+  const placed = state.placed.size, q = quizCount();
+  const pct = Math.round((placed + q) / (TOTAL + JUMLAH_SOAL) * 100);
+  $('#pPct').textContent = pct + '%';
+  $('#pBar').style.width = pct + '%';
+  $('#pBarWrap').setAttribute('aria-valuenow', pct);
+  $('#pRakit').textContent = `${placed}/${TOTAL}`;
+  $('#pUji').textContent = `${q}/${JUMLAH_SOAL}`;
+  const [lbl, ic] = startLabel();
+  $('#btnStart').innerHTML = `${ic}<span>${lbl}</span>`;
+  $('#modeChip').textContent = { explore: 'Eksplorasi', practice: 'Praktik perakitan', quiz: 'Uji identifikasi' }[state.mode];
+  let s;
+  if (state.mode === 'explore') {
+    s = state.focus ? `<b>${byId[state.focus].nama}</b>: ${byId[state.focus].singkat}.` : 'Ketuk bagian motor untuk mengenal komponennya.';
+  } else if (state.mode === 'practice') {
+    s = state.selected ? `Dipilih <b>${byId[state.selected].nama}</b>. Ketuk titik posisinya pada motor.`
+      : (placed === TOTAL ? 'Semua komponen terpasang.' : `Pilih kartu komponen, lalu ketuk titik bernomor. <b>${placed}/${TOTAL}</b> terpasang.`);
+  } else {
+    s = `Soal <b>${state.quiz.i + 1}</b> dari ${state.quiz.qs.length}, skor <b>${state.quiz.score}</b>.`;
+  }
+  $('#status').innerHTML = s;
+}
+function renderSide() {
+  const y = side.scrollTop;
+  side.innerHTML = state.mode === 'practice' ? practiceHTML() : state.mode === 'quiz' ? quizHTML() : exploreHTML();
+  side.scrollTop = y;
+}
+function renderAll() { layout.dataset.mode = state.mode; renderStage(); renderSide(); renderTop(); }
+
+/* ---------- Umpan balik ---------- */
+let toastTimer;
+function toast(msg, type, ms) {
+  const t = $('#toast');
+  t.className = 'toast ' + (type || '');
+  t.innerHTML = msg;
+  void t.offsetWidth;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), ms || 2600);
+}
+
+/* ---------- Koordinat & titik ---------- */
+function toSvg(x, y) {
+  const p = svg.createSVGPoint(); p.x = x; p.y = y;
+  const m = svg.getScreenCTM();
+  return m ? p.matrixTransform(m.inverse()) : { x: -999, y: -999 };
+}
+function nearest(pt, onlyOpen) {
+  let best = null, bd = Infinity;
+  for (const c of KOMPONEN) {
+    if (onlyOpen && state.placed.has(c.id)) continue;
+    const d = Math.hypot(c.smk[0] - pt.x, c.smk[1] - pt.y);
+    if (d < bd) { bd = d; best = c; }
+  }
+  return bd <= Math.max(46, 26 / stageScale()) ? best : null;
+}
+function flashMarker(id, cls, ms) {
+  const g = LY.mk.querySelector(`[data-mk="${id}"]`);
+  if (!g) return;
+  g.classList.add(cls);
+  setTimeout(() => g.classList.remove(cls), ms);
+}
+
+/* ---------- Praktik perakitan ---------- */
+function selectCard(id) {
+  state.selected = state.selected === id ? null : id;
+  state.hintId = null;
+  renderMarkers(); renderSide(); renderTop();
+  if (state.selected) {
+    const r = $('.stage-card').getBoundingClientRect();
+    if (r.bottom < 60 || r.top > window.innerHeight - 60) $('.stage-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+function attempt(id, target) {
+  const c = byId[id];
+  if (!target) { toast('Ketuk tepat pada titik bernomor.', ''); return; }
+  if (target.id === id) {
+    state.placed.add(id); state.selected = null; state.hintId = null;
+    state.justPlaced = id; state.last = id;
+    save(); renderAll();
+    toast(`Tepat. ${c.nama} terpasang.`, 'ok');
+    if (state.placed.size === TOTAL) setTimeout(showFinish, 700);
+  } else {
+    state.wrong++; save();
+    flashMarker(target.id, 'wrong', 650);
+    toast(`Belum tepat. Petunjuk letak ${c.nama}: ${c.lokasi}`, 'bad', 4500);
+    const card = side.querySelector(`.card[data-card="${id}"]`);
+    if (card) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+    const stats = $('#stats'); if (stats) stats.innerHTML = statsHTML();
+  }
+}
+function useHint() {
+  if (!state.selected) { toast('Pilih kartu komponen dulu.', ''); return; }
+  state.hints++; save();
+  const id = state.selected;
+  state.hintId = id; renderMarkers();
+  setTimeout(() => { if (state.hintId === id) { state.hintId = null; renderMarkers(); } }, 2600);
+  const stats = $('#stats'); if (stats) stats.innerHTML = statsHTML();
+  toast(`Titik ${byId[id].nama} sedang berkedip hijau.`, 'ok');
+}
+function predikatRakit() {
+  const n = state.wrong + state.hints;
+  return n <= 2 ? 'Sangat baik' : n <= 6 ? 'Baik' : 'Cukup, coba ulangi agar lebih teliti';
+}
+function showFinish() {
+  openModal(`<div class="center"><div class="big">${IC.check}</div><h3>Perakitan selesai</h3>
+    <p class="lead">Semua ${TOTAL} komponen sudah terpasang pada posisinya.</p></div>
+    <div class="kpis"><div><b>${TOTAL}/${TOTAL}</b><span>Terpasang</span></div><div><b>${state.wrong}</b><span>Salah pasang</span></div><div><b>${state.hints}</b><span>Petunjuk</span></div></div>
+    <p class="note">Predikat perakitan: <b>${predikatRakit()}</b></p>
+    <div class="m-actions"><button type="button" class="btn" data-act="view">${IC.eye}<span>Lihat Motor Utuh</span></button>
+    <button type="button" class="btn primary" data-act="quiz">${IC.quiz}<span>Mulai Uji</span></button></div>`);
+}
+
+/* ---------- Uji identifikasi ---------- */
+function startQuiz() {
+  const ids = shuffle(KOMPONEN.map(c => c.id)).slice(0, JUMLAH_SOAL);
+  const types = shuffle(['tunjuk', 'tunjuk', 'tunjuk', 'tunjuk', 'fungsi', 'fungsi', 'fungsi', 'komponen', 'komponen', 'komponen']);
+  const qs = ids.map((id, i) => {
+    const others = shuffle(KOMPONEN.map(c => c.id).filter(x => x !== id)).slice(0, 3);
+    return { id, type: types[i % types.length], opts: shuffle([id, ...others]) };
+  });
+  state.quiz = { qs, i: 0, score: 0, answered: null, res: [] };
+  state.mode = 'quiz'; state.selected = null;
+  state.focus = qs[0].type === 'tunjuk' ? qs[0].id : null;
+  closeModal(); renderAll(); scrollToStage();
+}
+function answer(i) {
+  const Q = state.quiz; if (!Q || Q.answered != null) return;
+  const q = Q.qs[Q.i]; Q.answered = i;
+  const ok = q.opts[i] === q.id;
+  if (ok) Q.score++;
+  Q.res.push(ok);
+  state.focus = q.id;
+  renderAll();
+}
+function nextQuestion() {
+  const Q = state.quiz; if (!Q) return;
+  Q.i++; Q.answered = null;
+  if (Q.i >= Q.qs.length) { finishQuiz(); return; }
+  state.focus = Q.qs[Q.i].type === 'tunjuk' ? Q.qs[Q.i].id : null;
+  renderAll(); scrollToStage();
+}
+function predikatUji(n) { return n >= 90 ? 'Sangat baik' : n >= 75 ? 'Baik' : n >= 60 ? 'Cukup' : 'Perlu latihan lagi'; }
+function finishQuiz() {
+  const Q = state.quiz, s = Q.score, nilai = s * 10;
+  state.quizScore = s; state.best = Math.max(state.best == null ? 0 : state.best, s);
+  state.quiz = null; state.mode = 'explore'; state.focus = null;
+  save(); renderAll();
+  const salah = Q.qs.filter((q, i) => !Q.res[i]).map(q => `<div><b>${byId[q.id].nama}</b>: ${byId[q.id].singkat}.</div>`).join('');
+  openModal(`<div class="center"><div class="big">${IC.check}</div><h3>Nilai uji: ${nilai}</h3>
+    <p class="lead">${s} dari ${Q.qs.length} soal benar. Predikat: <b>${predikatUji(nilai)}</b></p></div>
+    ${salah ? `<div class="m-sec"><h4>Pelajari lagi</h4><div class="review">${salah}</div></div>` : '<p class="note ok">Semua jawaban benar.</p>'}
+    <div class="m-actions"><button type="button" class="btn" data-act="close">Selesai</button>
+    <button type="button" class="btn primary" data-act="quiz">${IC.reset}<span>Ulangi Uji</span></button></div>`);
+}
+
+/* ---------- Modal ---------- */
+let lastFocus = null;
+function openModal(html, wide) {
+  lastFocus = document.activeElement;
+  $('#sheet').classList.toggle('wide', !!wide);
+  $('#sheet').innerHTML = html;
+  $('#modal').hidden = false;
+  document.body.classList.add('noscroll');
+  const b = $('#sheet').querySelector('button');
+  if (b) b.focus({ preventScroll: true });
+}
+function closeModal() {
+  if ($('#modal').hidden) return;
+  $('#modal').hidden = true;
+  document.body.classList.remove('noscroll');
+  if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+}
+const closeX = '<button type="button" class="x" data-act="close" aria-label="Tutup">&times;</button>';
+function guideHTML() {
+  const legend = Object.values(GRUP).map(g => `<span class="chip"><span class="dot" style="background:var(${g.v})"></span>${g.label}</span>`).join('');
+  return `<div class="m-head"><h3>Panduan lab maya</h3>${closeX}</div>
+  <div class="m-sec"><h4>Tujuan pembelajaran</h4><ol>
+    <li><b>TP 1.</b> Mengidentifikasi nama dan fungsi komponen utama sepeda motor.</li>
+    <li><b>TP 2.</b> Menentukan letak dan posisi komponen pada gambar tampak samping.</li>
+    <li><b>TP 3.</b> Mengelompokkan komponen per sistem dan menganalisis perannya dalam alur tenaga.</li></ol>
+    <p class="lead">Rincian capaian dan alur tujuan pembelajaran ada di tombol <b>CP &amp; ATP</b>.</p></div>
+  <div class="m-sec"><h4>Alur praktik</h4><div class="steps">
+    <div class="step"><span>1</span><p><b>Kenali.</b> Ketuk bagian motor atau buka Daftar Komponen untuk membaca fungsi dan letak tiap komponen.</p></div>
+    <div class="step"><span>2</span><p><b>Rakit.</b> Tekan Mulai Praktik. Motor tinggal rangka dan bodi tembus pandang dengan titik bernomor. Ketuk kartu komponen, lalu ketuk titik yang tepat${finePointer ? ' (atau seret kartunya)' : ''}. Jika salah, muncul petunjuk letak. Tombol Petunjuk membuat titik yang benar berkedip.</p></div>
+    <div class="step"><span>3</span><p><b>Uji.</b> Setelah ${TOTAL} komponen terpasang, kerjakan ${JUMLAH_SOAL} soal acak: menebak komponen yang menyala dan mencocokkan fungsinya.</p></div>
+  </div></div>
+  <div class="m-sec"><h4>Warna kelompok sistem</h4><div class="chips">${legend}</div></div>
+  <div class="m-sec"><h4>Catatan ilustrasi</h4><p>Motor digambar sebagai skuter matik generik tampak samping kiri dengan bodi tembus pandang, agar komponen di balik bodi terlihat. Karena memakai transmisi CVT, rantai dan gear diganti V-belt dan puli CVT. Knalpot berada di sisi kanan, sehingga bagian yang tertutup digambar dengan garis putus-putus. Letak tangki, aki, dan komponen kelistrikan bisa berbeda pada tiap tipe skuter. Progres tersimpan otomatis di perangkat ini.</p></div>
+  <div class="credit">Penyusun: <b>Mohammad Yusron Kholish, S.Kom</b>, SMKS PGRI SINGOSARI</div>
+  <div class="m-actions"><button type="button" class="btn primary" data-act="close">Mengerti</button></div>`;
+}
+function listHTML() {
+  const hideLoc = state.mode === 'practice';
+  let h = `<div class="m-head"><div><h3>Daftar komponen</h3><p class="lead">${TOTAL} komponen dalam ${Object.keys(GRUP).length} kelompok sistem.</p></div>${closeX}</div>`;
+  if (hideLoc) h += `<p class="note">Selama praktik perakitan, keterangan letak disembunyikan.</p>`;
+  for (const [k, g] of Object.entries(GRUP)) {
+    const items = KOMPONEN.filter(c => c.grup === k).map(c => `<details class="item" data-id="${c.id}"><summary><span>${c.nama}</span></summary><div class="body">
+      <p><b>Fungsi:</b> ${c.fungsi}</p>${hideLoc ? '' : `<p><b>Letak:</b> ${c.lokasi}</p>`}<p><b>Perawatan:</b> ${c.rawat}</p>
+      ${state.mode === 'explore' ? `<button type="button" class="btn sm" data-act="show" data-id="${c.id}">${IC.eye}<span>Lihat di motor</span></button>` : ''}</div></details>`).join('');
+    h += `<div class="grp"><h4><span class="dot" style="background:var(${g.v})"></span>${g.label}</h4>${items}</div>`;
+  }
+  return h;
+}
+function markKnown(id) {
+  if (!byId[id] || state.known.has(id)) return;
+  state.known.add(id); save();
+}
+function tpStatus(i) {
+  if (i === 0) {
+    const n = state.known.size;
+    return { lvl: n >= TOTAL ? 'ok' : n > 0 ? 'mid' : 'no', info: `${n}/${TOTAL} komponen dikenali` };
+  }
+  if (i === 1) {
+    const n = state.placed.size;
+    return { lvl: n === TOTAL ? (state.wrong <= 3 ? 'ok' : 'low') : n > 0 ? 'mid' : 'no', info: `${n}/${TOTAL} terpasang, ${state.wrong} salah pasang` };
+  }
+  const b = state.best;
+  return { lvl: b == null ? 'no' : b * 10 >= 75 ? 'ok' : 'low', info: b == null ? 'uji belum dikerjakan' : `nilai terbaik ${b * 10}` };
+}
+const LVL = { ok: 'Tercapai', mid: 'Dalam proses', low: 'Perlu penguatan', no: 'Belum dimulai' };
+function cpHTML() {
+  const K = KURIKULUM;
+  const el = K.elemen.map(e => `<div class="cp-el"><h5>Elemen ${e.no}. ${e.nama}</h5><p>${e.cp}</p><small>${e.catatan}</small></div>`).join('');
+  const totalJP = ATP.reduce((a, t) => a + t.jp, 0);
+  const tps = ATP.map((t, i) => {
+    const s = tpStatus(i);
+    return `<article class="tp"><div class="tp-no" aria-hidden="true">${i + 1}</div><div>
+      <div class="tp-head"><b>${t.kode}</b><span class="chip">Elemen ${t.elemen}</span><span class="chip">${t.jp} JP</span><span class="chip">Tahap ${t.tahap}</span></div>
+      <p class="tp-text">${t.tp}</p>
+      <dl class="tp-grid">
+        <div><dt>Kegiatan</dt><dd>${t.kegiatan}</dd></div>
+        <div><dt>Kriteria ketercapaian (KKTP)</dt><dd>${t.kktp}</dd></div>
+        <div><dt>Asesmen</dt><dd>${t.asesmen}</dd></div>
+        <div><dt>Dimensi profil lulusan</dt><dd>${t.dpl.join(', ')}</dd></div>
+      </dl>
+      <span class="pill ${s.lvl}"><i></i>${LVL[s.lvl]}: ${s.info}</span>
+    </div></article>`;
+  }).join('');
+  return `<div class="m-head"><div><h3>CP &amp; ATP</h3><p class="lead">${K.mapel}, ${K.fase}</p></div>${closeX}</div>
+  <div class="m-sec"><h4>Identitas</h4><dl class="idgrid">
+    <dt>Mata pelajaran</dt><dd>${K.mapel}</dd>
+    <dt>Fase / kelas</dt><dd>${K.fase}</dd>
+    <dt>Program keahlian</dt><dd>${K.program}</dd>
+    <dt>Alokasi waktu</dt><dd>${K.alokasi}</dd>
+    <dt>Acuan CP</dt><dd>${K.acuan}</dd>
+    <dt>Penyusun</dt><dd>Mohammad Yusron Kholish, S.Kom, SMKS PGRI SINGOSARI</dd>
+  </dl></div>
+  <div class="m-sec"><h4>Capaian pembelajaran</h4><p class="cp-open">${K.pembuka} Elemen yang menjadi sasaran lab maya ini:</p>${el}
+    <p class="cp-other">Elemen lain pada mata pelajaran ini (di luar sasaran lab maya): ${K.lain.join('; ')}.</p></div>
+  <div class="m-sec"><h4>Alur tujuan pembelajaran</h4><p class="cp-open">Tujuan pembelajaran disusun berurutan mengikuti tahap di lab maya. Status di bawah dihitung dari progres di perangkat ini.</p>${tps}
+    <p class="tp-total">Total alokasi: ${totalJP} JP. KKTP dan alokasi waktu dapat disesuaikan dengan kebijakan satuan pendidikan.</p></div>
+  <div class="m-actions"><button type="button" class="btn primary" data-act="close">Tutup</button></div>`;
+}
+function resetHTML() {
+  return `<div class="m-head"><h3>Reset lab maya?</h3>${closeX}</div>
+  <p class="lead">Semua komponen akan dilepas dari motor, catatan komponen yang dikenali, salah pasang, dan petunjuk dihapus, serta nilai uji dikosongkan.</p>
+  <div class="m-actions"><button type="button" class="btn" data-act="close">Batal</button><button type="button" class="btn primary" data-act="doreset">${IC.reset}<span>Ya, reset</span></button></div>`;
+}
+function doReset() {
+  state.placed.clear(); state.wrong = 0; state.hints = 0; state.order = shuffle(KOMPONEN.map(c => c.id));
+  state.quiz = null; state.quizScore = null; state.best = null; state.last = null; state.known.clear();
+  state.mode = 'explore'; state.focus = null; state.selected = null; state.hintId = null;
+  save(); closeModal(); renderAll(); toast('Lab maya sudah direset.', 'ok');
+}
+function scrollToStage() {
+  const r = $('.stage-card').getBoundingClientRect();
+  if (r.top < 0 || r.top > window.innerHeight * 0.5) $('.stage-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---------- Event ---------- */
+$('#btnGuide').innerHTML = `${IC.book}<span>Panduan</span>`;
+$('#btnList').innerHTML = `${IC.list}<span>Daftar Komponen</span>`;
+$('#btnReset').innerHTML = `${IC.reset}<span>Reset</span>`;
+$('#btnCp').innerHTML = `${IC.target}<span>CP &amp; ATP</span>`;
+
+$('#btnStart').addEventListener('click', () => {
+  if (state.mode === 'practice') { state.mode = 'explore'; state.selected = null; state.focus = null; renderAll(); return; }
+  if (state.mode === 'quiz') { state.quiz = null; state.mode = 'explore'; state.focus = null; renderAll(); toast('Uji dihentikan. Nilai tidak disimpan.', ''); return; }
+  if (state.placed.size === TOTAL) { startQuiz(); return; }
+  state.mode = 'practice'; state.focus = null; state.selected = null; renderAll();
+  toast('Pilih kartu komponen, lalu ketuk titik bernomor yang tepat.', '', 3200);
+});
+$('#btnGuide').addEventListener('click', () => { state.seen = true; save(); openModal(guideHTML()); });
+$('#btnList').addEventListener('click', () => {
+  if (state.mode === 'quiz') { toast('Daftar komponen dikunci selama uji berlangsung.', ''); return; }
+  openModal(listHTML());
+});
+$('#btnReset').addEventListener('click', () => openModal(resetHTML()));
+$('#btnCp').addEventListener('click', () => openModal(cpHTML(), true));
+$('#sheet').addEventListener('toggle', e => {
+  const d = e.target;
+  if (d.matches && d.matches('details.item') && d.open && d.dataset.id) markKnown(d.dataset.id);
+}, true);
+
+svg.addEventListener('click', e => {
+  if (suppressClick) return;
+  const pt = toSvg(e.clientX, e.clientY);
+  if (state.mode === 'explore') {
+    const g = e.target.closest ? e.target.closest('.part') : null;
+    const c = g ? byId[g.dataset.id] : nearest(pt, false);
+    state.focus = c ? (state.focus === c.id ? null : c.id) : null;
+    if (state.focus) markKnown(state.focus);
+    renderStage(); renderSide(); renderTop();
+    if (state.focus && window.innerWidth <= 900) toast(`<b>${byId[state.focus].nama}</b>: ${byId[state.focus].singkat}.`, 'ok', 2600);
+  } else if (state.mode === 'practice') {
+    const target = nearest(pt, true);
+    if (!state.selected) { if (target) toast('Pilih dulu kartu komponen, lalu ketuk titik ini.', ''); return; }
+    attempt(state.selected, target);
+  }
+});
+
+side.addEventListener('click', e => {
+  if (suppressClick) return;
+  const card = e.target.closest('[data-card]');
+  if (card) { selectCard(card.dataset.card); return; }
+  const opt = e.target.closest('[data-opt]');
+  if (opt) { answer(+opt.dataset.opt); return; }
+  const act = e.target.closest('[data-act]');
+  if (!act) return;
+  const a = act.dataset.act;
+  if (a === 'hint') useHint();
+  else if (a === 'next') nextQuestion();
+  else if (a === 'quiz') startQuiz();
+  else if (a === 'clearfocus') { state.focus = null; renderAll(); }
+});
+
+$('#modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') { closeModal(); return; }
+  const act = e.target.closest('[data-act]');
+  if (!act) return;
+  const a = act.dataset.act;
+  if (a === 'close') closeModal();
+  else if (a === 'doreset') doReset();
+  else if (a === 'quiz') startQuiz();
+  else if (a === 'view') { closeModal(); state.mode = 'explore'; state.focus = null; renderAll(); scrollToStage(); }
+  else if (a === 'show') { closeModal(); state.mode = 'explore'; state.focus = act.dataset.id; markKnown(act.dataset.id); renderAll(); scrollToStage(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('#modal').hidden) closeModal();
+  else if (state.selected) { state.selected = null; renderMarkers(); renderSide(); renderTop(); }
+});
+
+/* Seret kartu dengan mouse/pena (layar sentuh memakai ketuk-lalu-ketuk) */
+let drag = null, suppressClick = false;
+const ghost = $('#ghost');
+side.addEventListener('pointerdown', e => {
+  const card = e.target.closest('[data-card]');
+  if (!card || e.pointerType === 'touch' || e.button !== 0) return;
+  drag = { id: card.dataset.card, x: e.clientX, y: e.clientY, on: false, over: null };
+});
+window.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.on) {
+    if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 7) return;
+    drag.on = true;
+    state.selected = drag.id; state.hintId = null;
+    renderMarkers(); renderTop();
+    side.querySelectorAll('.card').forEach(c => c.classList.toggle('sel', c.dataset.card === drag.id));
+    ghost.innerHTML = thumbSVG(byId[drag.id]);
+    ghost.hidden = false;
+    document.body.classList.add('dragging');
+  }
+  ghost.style.left = e.clientX + 'px';
+  ghost.style.top = e.clientY + 'px';
+  const r = svg.getBoundingClientRect();
+  const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+  const t = inside ? nearest(toSvg(e.clientX, e.clientY), true) : null;
+  const id = t ? t.id : null;
+  if (id !== drag.over) {
+    LY.mk.querySelectorAll('.over').forEach(g => g.classList.remove('over'));
+    if (id) { const g = LY.mk.querySelector(`[data-mk="${id}"]`); if (g) g.classList.add('over'); }
+    drag.over = id;
+  }
+});
+window.addEventListener('pointerup', e => {
+  if (!drag) return;
+  const d = drag; drag = null;
+  if (!d.on) return;
+  ghost.hidden = true;
+  document.body.classList.remove('dragging');
+  suppressClick = true; setTimeout(() => { suppressClick = false; }, 0);
+  const r = svg.getBoundingClientRect();
+  const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+  if (inside) attempt(d.id, nearest(toSvg(e.clientX, e.clientY), true));
+  else { renderSide(); renderMarkers(); renderTop(); }
+});
+window.addEventListener('pointercancel', () => {
+  if (!drag) return;
+  drag = null; ghost.hidden = true; document.body.classList.remove('dragging');
+});
+
+if ('ResizeObserver' in window) new ResizeObserver(() => { if (state.mode === 'practice') renderMarkers(); }).observe(svg);
+
+/* ---------- Mulai ---------- */
+const hadData = load();
+renderBase();
+renderAll();
+if (!hadData || !state.seen) { state.seen = true; save(); setTimeout(() => openModal(guideHTML()), 350); }
+})();
+</script>
+</body>
+</html>
